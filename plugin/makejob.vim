@@ -219,17 +219,17 @@ function! s:MakeJobCompletion(arglead, cmdline, cursorpos)
     return l:return
 endfunction
 
-command! -bang -nargs=* -complete=file MakeJob
+command! -bang  -bar-nargs=* -complete=file MakeJob
             \ call <sid>MakeJob(0,0,0,<bang>0,<q-args>)
-command! -bang -nargs=* -complete=file LmakeJob
+command! -bang -bar -nargs=* -complete=file LmakeJob
             \ call <sid>MakeJob(0,1,0,<bang>0,<q-args>)
-command! -bang -nargs=+ -complete=file GrepJob
+command! -bang -bar -nargs=+ -complete=file GrepJob
             \ call <sid>MakeJob(1,0,0,<bang>0,<q-args>)
-command! -bang -nargs=+ -complete=file LgrepJob
+command! -bang -bar -nargs=+ -complete=file LgrepJob
             \ call <sid>MakeJob(1,1,0,<bang>0,<q-args>)
-command! -bang -nargs=+ -complete=file GrepaddJob
+command! -bang -bar -nargs=+ -complete=file GrepaddJob
             \ call <sid>MakeJob(1,0,1,<bang>0,<q-args>)
-command! -bang -nargs=+ -complete=file LgrepaddJob
+command! -bang -bar -nargs=+ -complete=file LgrepaddJob
             \ call <sid>MakeJob(1,1,1,<bang>0,<q-args>)
 command! -nargs=? -complete=customlist,<sid>MakeJobCompletion
             \ MakeJobStop call <sid>JobStop(<f-args>)
