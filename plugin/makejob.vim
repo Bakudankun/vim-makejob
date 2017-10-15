@@ -219,7 +219,7 @@ function! s:MakeJobCompletion(arglead, cmdline, cursorpos)
     return l:return
 endfunction
 
-command! -bang  -bar-nargs=* -complete=file MakeJob
+command! -bang -bar -nargs=* -complete=file MakeJob
             \ call <sid>MakeJob(0,0,0,<bang>0,<q-args>)
 command! -bang -bar -nargs=* -complete=file LmakeJob
             \ call <sid>MakeJob(0,1,0,<bang>0,<q-args>)
