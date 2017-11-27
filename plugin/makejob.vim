@@ -67,7 +67,7 @@ function! s:JobHandler(channel) abort
 
     let l:curwinnr = winnr()
     execute bufwinnr(l:job['srcbufnr']).'wincmd w'
-	let l:exitval = job_info(b:makejob).exitval
+    let l:exitval = job_info(b:makejob).exitval
     unlet b:makejob
     nunmap <buffer> <C-c>
 
@@ -236,3 +236,4 @@ command! -nargs=? -complete=customlist,<sid>MakeJobCompletion
             \ MakeJobStop call <sid>JobStop(<f-args>)
 let &cpo = s:save_cpo
 unlet s:save_cpo
+" vim: set et sts=4 tw=80
