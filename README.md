@@ -6,6 +6,7 @@ editor. _MakeJob_ implements asynchronous versions of the builtin
 commands in just a couple hundred lines of Vimscript.
 
 ## Goals
+
 1. Implement a minimal solution for asynchronous `:make` and `:grep`.
    No unnecessary features.
 2. Let Vim be Vim. Use `makeprg` and `errorformat` to configure
@@ -16,20 +17,32 @@ commands in just a couple hundred lines of Vimscript.
    `QuickFixCmdPost`, and the bang operator work as expected.
 
 ## Requirements
+
 Vim compiled with `+job`, `+channel`, and of course `+quickfix`.
 
 ## Installation
+
+### Arch Linux
+
+Arch Linux users can install system-wide through the `vim-makejob`
+package in the AUR, or on a per-user basis using any of the methods
+below.
+
 ### Pathogen
+
 `cd ~/.vim/bundle`   
 `git clone https://github.com/djmoch/vim-makejob.git`
 
 ### Plug.vim
+
 `Plug 'djmoch/vim-makejob'`
 
 Most other plugin managers will resemble one of these two.
 
 ## Usage
+
 ### The Short Version
+
 Vim has `:make` and `:grep`. Replace those calls with `:MakeJob` and
 `:GrepJob`. A buffer will open showing the command output, which will
 be parsed into the Quickfix or LocationList window when the job
@@ -60,6 +73,7 @@ admittedly a bit longer than we would probably like, but if you grep a
 lot you'll probably want to set a mapping for it anyway (see below).
 
 ### The Less Short Version
+
 Users of Syntastic may not be aware that Vim offers many of the same
 features out of the box. Here's a brief rundown.
 
@@ -109,6 +123,7 @@ setting:
 `let g:makejob_hide_preview_window = 1`
 
 ## Gotchas
+
 1. If `grepprg` is set to `'internal'`, then Vim uses its own builtin grep
    command. This still works when you call `:GrepJob`, but not
    asynchronously.
@@ -117,6 +132,7 @@ setting:
    instances of `make` simultaneously.
 
 ## Vim Documentation
+
 Part of the goal of _MakeJob_ is to minimize the size of the plugin by
 using features Vim already offers whenever possible. To that end, if
 any of what foregoing discussion doesn't make sense, then take a look at
@@ -130,4 +146,5 @@ be the following:
 5. `:h quickfix`
 
 ## License
+
 MIT - See the [LICENSE](/LICENSE) file for more information
