@@ -1,7 +1,7 @@
 "
 " TITLE:   VIM-MAKEJOB
 " AUTHOR:  Daniel Moch <daniel@danielmoch.com>
-" VERSION: 1.3-dev
+" VERSION: 1.3
 "
 if exists('g:loaded_makejob') || &cp
     finish
@@ -241,4 +241,4 @@ command! -nargs=? -complete=customlist,<sid>MakeJobCompletion
             \ MakeJobStop call <sid>JobStop(<f-args>)
 let &cpo = s:save_cpo
 unlet s:save_cpo
-" vim: set et sts=4 sw=4 tw=80
+" vim: set et sts=4 sw=4 tw=72
