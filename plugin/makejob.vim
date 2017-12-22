@@ -110,7 +110,12 @@ function! s:JobHandler(channel) abort
     echomsg l:job['prog']." returned ".l:exitval." with ".l:makeoutput." findings"
 endfunction
 
-function! s:CreateMakeJobBuffer(prog)
+function! s:CreateMakeJobBuffer(prog, lmake)
+    let l:winct = winnr('$')
+    let l:curwinnr = winnr()
+    if !a:lmake
+        execute l:winct.'wincmd w'
+    endif
     silent execute 'belowright 10split '.a:prog
     setlocal bufhidden=hide buftype=nofile buflisted nolist
     setlocal noswapfile nowrap nomodifiable
@@ -119,7 +124,7 @@ function! s:CreateMakeJobBuffer(prog)
     if g:makejob_hide_preview_window
         hide
     else
-        wincmd p
+        execute l:curwinnr.'wincmd w'
     end
     return l:bufnum
 endfunction
@@ -191,7 +196,7 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
         execute l:make
         return
     else
-        let l:outbufnr = s:CreateMakeJobBuffer(prog)
+        let l:outbufnr = s:CreateMakeJobBuffer(prog, a:lmake)
 
         let l:makejob = job_start(l:make, l:opts)
         let b:makejob = l:makejob
