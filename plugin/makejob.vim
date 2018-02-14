@@ -31,7 +31,7 @@ endfunction
 function! s:JobStop(...) abort
     if a:0
        if bufexists(a:1)
-           execute bufwinnr(a:1).'wincmd w'
+           call win_gotoid(win_findbuf(bufnr(a:1))[0])
            if exists('b:makejob')
                if !job_stop(b:makejob)
                    echoerr 'Failed to stop current MakeJob'
@@ -65,8 +65,8 @@ function! s:JobHandler(channel) abort
         let &errorformat = l:tempefm
     endif
 
-    let l:curwinnr = winnr()
-    execute bufwinnr(l:job['srcbufnr']).'wincmd w'
+    let l:curwinid = win_getid()
+    call win_gotoid(win_findbuf(l:job['srcbufnr'])[0])
     let l:exitval = job_info(b:makejob).exitval
     unlet b:makejob
     nunmap <buffer> <C-c>
@@ -87,7 +87,7 @@ function! s:JobHandler(channel) abort
       call setqflist([], 'a', {'title':l:job['prog']})
     endif
     silent execute l:job['outbufnr'].'bwipe!' 
-    execute l:curwinnr.'wincmd w'
+    call win_gotoid(l:curwinid)
 
     let l:initqf = l:job['lmake'] ? getloclist(bufwinnr(
                 \ job['srcbufnr'])) : getqflist()
