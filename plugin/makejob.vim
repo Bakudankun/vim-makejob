@@ -241,4 +241,4 @@ command! -nargs=? -complete=customlist,<sid>MakeJobCompletion
             \ MakeJobStop call <sid>JobStop(<f-args>)
 let &cpo = s:save_cpo
 unlet s:save_cpo
-" vim: set et sts=4 sw=4 tw=72
+" vim: et sts=4 sw=4 tw=72
