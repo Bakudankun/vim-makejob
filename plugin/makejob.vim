@@ -66,10 +66,13 @@ function! s:JobHandler(channel) abort
     endif
 
     let l:curwinid = win_getid()
-    call win_gotoid(win_findbuf(l:job['srcbufnr'])[0])
-    let l:exitval = job_info(b:makejob).exitval
-    unlet b:makejob
-    nunmap <buffer> <C-c>
+    let l:srcbuf = win_findbuf(l:job['srcbufnr'])
+    if !empty(l:srcbuf)
+        call win_gotoid(l:srcbuf[0])
+        unlet b:makejob
+        nunmap <buffer> <C-c>
+    endif
+    let l:exitval = job_info(l:job['job']).exitval
 
     if l:job['lmake']
         let l:qfcmd = l:job['grepadd'] ? 'laddbuffer' : 'lgetbuffer'
