@@ -55,6 +55,18 @@ endfunction
 
 function! s:JobHandler(channel) abort
     let l:job = remove(s:jobinfo, split(a:channel)[1])
+    let l:lcwd = getcwd()
+    let l:cwd = getcwd(-1)
+
+    if l:cwd != l:lcwd
+        execute 'lcd'.l:job['cwd']
+    endif
+    execute 'cd '.l:job['cwd']
+
+    let l:curwinid = win_getid()
+    let l:srcbuf = win_findbuf(l:job['srcbufnr'])
+    let l:outbuf = win_findbuf(l:job['outbufnr'])
+    let l:lmake = 0
 
     " For reasons I don't understand, copying and re-writing
     " errorformat fixes a lot of parsing errors
@@ -65,35 +77,36 @@ function! s:JobHandler(channel) abort
         let &errorformat = l:tempefm
     endif
 
-    let l:curwinid = win_getid()
-    let l:srcbuf = win_findbuf(l:job['srcbufnr'])
     if !empty(l:srcbuf)
         call win_gotoid(l:srcbuf[0])
         unlet b:makejob
         nunmap <buffer> <C-c>
+        let l:lmake = l:job['lmake'] ? 1 : 0
     endif
     let l:exitval = job_info(l:job['job']).exitval
 
-    if l:job['lmake']
+    if l:lmake
         let l:qfcmd = l:job['grepadd'] ? 'laddbuffer' : 'lgetbuffer'
     else
         let l:qfcmd = l:job['grepadd'] ? 'caddbuffer' : 'cgetbuffer'
     endif
 
-    if bufwinnr(l:job['outbufnr']) && l:job['outbufhidden'] == 0
-        silent execute bufwinnr(l:job['outbufnr']).'close'
+    if !empty(l:outbuf) && l:job['outbufhidden'] == 0
+        call win_gotoid(l:outbuf[0])
+        silent execute 'close'
     endif
     silent execute l:qfcmd.' '.l:job['outbufnr']
-    if l:job['lmake']
-      call setloclist(0, [], 'a', {'title':l:job['prog']})
+    if l:lmake
+        call win_gotoid(l:curwinid)
+        call setloclist(0, [], 'a', {'title':l:job['prog']})
     else
-      call setqflist([], 'a', {'title':l:job['prog']})
+        call setqflist([], 'a', {'title':l:job['prog']})
     endif
     silent execute l:job['outbufnr'].'bwipe!' 
     call win_gotoid(l:curwinid)
 
-    let l:initqf = l:job['lmake'] ? getloclist(bufwinnr(
-                \ job['srcbufnr'])) : getqflist()
+    let l:initqf = l:lmake ? getloclist(bufwinnr(l:srcbuf[0])) : 
+                \ getqflist()
     let l:makeoutput = 0
     let l:idx = 0
     while l:idx < len(l:initqf)
@@ -104,11 +117,22 @@ function! s:JobHandler(channel) abort
         let l:idx += 1
     endwhile
 
+    execute 'cd '.l:cwd
+    if l:cwd != l:lcwd
+        execute 'lcd'.l:lcwd
+    endif
+
     silent execute s:InitAutocmd(l:job['lmake'], l:job['grep'], 'Post')
 
-    if l:job['cfirst']
-        silent! cfirst
-    end
+    if l:lmake
+        if l:job['cfirst'] && !empty(l:srcbuf)
+            silent! lfirst
+        end
+    else
+        if l:job['cfirst'] && !empty(l:srcbuf)
+            silent! cfirst
+        end
+    endif
 
     echomsg l:job['prog']." returned ".l:exitval." with ".l:makeoutput." findings"
 endfunction
@@ -126,9 +150,8 @@ function! s:CreateMakeJobBuffer(prog, lmake)
     let l:bufnum = winbufnr(0)
     if g:makejob_hide_preview_window
         hide
-    else
-        execute l:curwinnr.'wincmd w'
     end
+    execute l:curwinnr.'wincmd w'
     return l:bufnum
 endfunction
 
@@ -150,6 +173,7 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
     let l:make = a:grep ? s:Expand(&grepprg) : s:Expand(&makeprg)
     let l:prog = split(l:make)[0]
     let l:internal_grep = l:make ==# 'internal' ? 1 : 0
+    let l:cwd = getcwd()
     execute 'let l:openbufnr = bufnr("^'.l:prog.'$")'
     if l:openbufnr != -1
         echohl WarningMsg
@@ -180,15 +204,6 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
         endif
     endif
 
-    let l:opts = { 'close_cb' : function('s:JobHandler'),
-                \  'out_io': 'buffer',
-                \  'out_name': l:prog,
-                \  'out_modifiable': 0,
-                \  'err_io': 'buffer',
-                \  'err_name': l:prog,
-                \  'err_modifiable': 0,
-                \  'in_io': 'null'}
-
     silent execute s:InitAutocmd(a:lmake, a:grep, 'Pre')
 
     if &autowrite && !empty(bufname('%')) && !a:grep
@@ -199,7 +214,16 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
         execute l:make
         return
     else
-        let l:outbufnr = s:CreateMakeJobBuffer(prog, a:lmake)
+        let l:outbufnr = s:CreateMakeJobBuffer(l:prog, a:lmake)
+
+        let l:opts = { 'close_cb' : function('s:JobHandler'),
+                    \  'out_io': 'buffer',
+                    \  'out_buf': l:outbufnr,
+                    \  'out_modifiable': 0,
+                    \  'err_io': 'buffer',
+                    \  'err_buf': l:outbufnr,
+                    \  'err_modifiable': 0,
+                    \  'in_io': 'null'}
 
         let l:makejob = job_start(l:make, l:opts)
         let b:makejob = l:makejob
@@ -209,7 +233,8 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
                     \   'srcbufnr': winbufnr(0),
                     \   'cfirst': !a:bang, 'grep': a:grep,
                     \   'grepadd': a:grepadd, 'job': b:makejob,
-                    \   'outbufhidden': g:makejob_hide_preview_window }
+                    \   'outbufhidden': g:makejob_hide_preview_window,
+                    \   'cwd': l:cwd }
         echomsg s:jobinfo[split(job_getchannel(b:makejob))[1]]['prog']
                     \ .' started'
 
