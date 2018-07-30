@@ -30,7 +30,7 @@ below.
 
 ### Pathogen
 
-`cd ~/.vim/bundle`   
+`cd ~/.vim/bundle`
 `git clone https://github.com/djmoch/vim-makejob.git`
 
 ### Plug.vim
@@ -80,7 +80,7 @@ features out of the box. Here's a brief rundown.
 With no prior configuration, `:make` will run the `make` program with no
 arguments, and populate the Quickfix list with any errors the process
 encounters. It's possible to change that behavior in one of two ways.
-The hard way is to manually use `:set makeprg` to change the program 
+The hard way is to manually use `:set makeprg` to change the program
 something else, and _then_ use `:set errorformat` to configure the
 format of the errors to look for. This gets pretty hairy, and so
 we're all better off trying to avoid this in favor of the easy way:

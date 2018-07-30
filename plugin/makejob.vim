@@ -102,10 +102,10 @@ function! s:JobHandler(channel) abort
     else
         call setqflist([], 'a', {'title':l:job['prog']})
     endif
-    silent execute l:job['outbufnr'].'bwipe!' 
+    silent execute l:job['outbufnr'].'bwipe!'
     call win_gotoid(l:curwinid)
 
-    let l:initqf = l:lmake ? getloclist(bufwinnr(l:srcbuf[0])) : 
+    let l:initqf = l:lmake ? getloclist(bufwinnr(l:srcbuf[0])) :
                 \ getqflist()
     let l:makeoutput = 0
     let l:idx = 0
@@ -227,7 +227,7 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
 
         let l:makejob = job_start(l:make, l:opts)
         let b:makejob = l:makejob
-        let s:jobinfo[split(job_getchannel(b:makejob))[1]] = 
+        let s:jobinfo[split(job_getchannel(b:makejob))[1]] =
                     \ { 'prog': l:prog,'lmake': a:lmake,
                     \   'outbufnr': l:outbufnr,
                     \   'srcbufnr': winbufnr(0),
