@@ -91,11 +91,11 @@ function! s:JobHandler(channel) abort
         let l:qfcmd = l:job['grepadd'] ? 'caddbuffer' : 'cgetbuffer'
     endif
 
+    silent execute l:qfcmd.' '.l:job['outbufnr']
     if !empty(l:outbuf) && l:job['outbufhidden'] == 0
         call win_gotoid(l:outbuf[0])
         silent execute 'close'
     endif
-    silent execute l:qfcmd.' '.l:job['outbufnr']
     if l:lmake
         call win_gotoid(l:curwinid)
         call setloclist(0, [], 'a', {'title':l:job['prog']})
@@ -150,8 +150,9 @@ function! s:CreateMakeJobBuffer(prog, lmake)
     let l:bufnum = winbufnr(0)
     if g:makejob_hide_preview_window
         hide
-    end
-    execute l:curwinnr.'wincmd w'
+    else
+        execute l:curwinnr.'wincmd w'
+    endif
     return l:bufnum
 endfunction
 
