@@ -1,6 +1,7 @@
 "
 " TITLE:   VIM-MAKEJOB
 " AUTHOR:  Daniel Moch <daniel@danielmoch.com>
+" LICENSE: MIT
 " VERSION: 1.3.1-dev
 "
 if exists('g:loaded_makejob') || &cp
