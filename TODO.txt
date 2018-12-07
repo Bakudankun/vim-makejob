@@ -1,0 +1,10 @@
+1. Old GH #25
+
+   using vim-makejob with the following make prg:
+
+       set makeprg=([[\ -f\ Makefile\ ]]\ &&\ (make\ $*;\ true)\\\|\\\|\ latexmk\ -lualatex\ \"%\"\ $*)
+
+   This works fine with :make, but when I run :MakeJob it fails to run
+   (Return 122 with findings) and the quickfix list is empty. There is
+   no Makefile.
+2. Neovim support
