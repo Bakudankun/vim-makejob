@@ -31,11 +31,11 @@ below.
 ### Pathogen
 
 `cd ~/.vim/bundle`
-`git clone https://github.com/djmoch/vim-makejob.git`
+`git clone https://git.danielmoch.com/vim-makejob.git`
 
 ### Plug.vim
 
-`Plug 'djmoch/vim-makejob'`
+`Plug 'https://git.danielmoch.com/vim-makejob.git'`
 
 Most other plugin managers will resemble one of these two.
 
@@ -97,7 +97,7 @@ would be to add the following to `~/.vim/after/ftplugin/python.vim`:
 
 Add that and you're good to go for Python files (assuming you have a
 pylint compiler which hey, if you need one I've [got you
-covered](http://github.com/djmoch/vim-compiler)).
+covered](/vim-runtime.git)).
 
 Additionally, if you'd like _MakeJob_ to run a linter automatically when
 you write a file, then something like the following in your `.vimrc`
@@ -147,4 +147,4 @@ be the following:
 
 ## License
 
-MIT - See the [LICENSE](/LICENSE) file for more information
+MIT - See the [LICENSE](/vim-makejob.git/tree/LICENSE) file for more information
