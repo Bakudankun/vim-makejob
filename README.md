@@ -145,6 +145,18 @@ be the following:
 4. `:h compiler`
 5. `:h quickfix`
 
+## Contributing
+
+Pull requests are welcome, preferably via emailed output of `git
+request-pull` sent to the maintainer (see
+[here](https://www.git-scm.com/docs/git-request-pull) for more
+information).  Bug reports should also be directed to the maintainer via
+[email](daniel@danielmoch.com).
+
+If you aren't hosting a fork anywhere online, you can also send patches
+using `git format-patch` (see
+[here](https://www.git-scm.com/docs/git-format-patch)).
+
 ## License
 
 MIT - See the [LICENSE](/vim-makejob.git/tree/LICENSE) file for more information
