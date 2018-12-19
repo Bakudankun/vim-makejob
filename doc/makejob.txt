@@ -93,6 +93,6 @@ g:makejob_hide_preview_window       Hide the preview window during execution.
 
 More details can be found in README.md or by navigating to:
 
-    https://github.com/djmoch/vim-makejob
+    https://git.danielmoch.com/vim-makejob/about
 
 vim:tw=78:ts=8:ft=help:norl:

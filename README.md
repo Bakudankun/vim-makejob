@@ -97,7 +97,7 @@ would be to add the following to `~/.vim/after/ftplugin/python.vim`:
 
 Add that and you're good to go for Python files (assuming you have a
 pylint compiler which hey, if you need one I've [got you
-covered](/vim-runtime.git)).
+covered](/vim-runtime)).
 
 Additionally, if you'd like _MakeJob_ to run a linter automatically when
 you write a file, then something like the following in your `.vimrc`
@@ -159,4 +159,4 @@ using `git format-patch` (see
 
 ## License
 
-MIT - See the [LICENSE](/vim-makejob.git/tree/LICENSE) file for more information
+MIT - See the [LICENSE](/vim-makejob/tree/LICENSE) file for more information
