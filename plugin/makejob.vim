@@ -47,7 +47,7 @@ function! s:JobStop(...) abort
     elseif exists('b:makejob')
        let l:job = s:jobinfo[split(job_getchannel(b:makejob))[1]]
        if !job_stop(b:makejob)
-           echoerr 'Failed to stop '.l:job['prog']
+           echoerr 'Failed to stop' l:job['prog']
        endif
     else
         echoerr 'Not in a MakeJob buffer, and none specified'
@@ -60,9 +60,9 @@ function! s:JobHandler(channel) abort
     let l:cwd = getcwd(-1)
 
     if l:cwd != l:lcwd
-        execute 'lcd'.l:job['cwd']
+        execute 'lcd' l:job['cwd']
     endif
-    execute 'cd '.l:job['cwd']
+    execute 'cd' l:job['cwd']
 
     let l:curwinid = win_getid()
     let l:srcbuf = win_findbuf(l:job['srcbufnr'])
@@ -92,10 +92,10 @@ function! s:JobHandler(channel) abort
         let l:qfcmd = l:job['grepadd'] ? 'caddbuffer' : 'cgetbuffer'
     endif
 
-    silent execute l:qfcmd.' '.l:job['outbufnr']
+    silent execute l:qfcmd l:job['outbufnr']
     if !empty(l:outbuf) && l:job['outbufhidden'] == 0
         call win_gotoid(l:outbuf[0])
-        silent execute 'close'
+        silent close
     endif
     if l:lmake
         call win_gotoid(l:curwinid)
@@ -118,9 +118,9 @@ function! s:JobHandler(channel) abort
         let l:idx += 1
     endwhile
 
-    execute 'cd '.l:cwd
+    execute 'cd' l:cwd
     if l:cwd != l:lcwd
-        execute 'lcd'.l:lcwd
+        execute 'lcd' l:lcwd
     endif
 
     silent execute s:InitAutocmd(l:job['lmake'], l:job['grep'], 'Post')
@@ -135,7 +135,7 @@ function! s:JobHandler(channel) abort
         end
     endif
 
-    echomsg l:job['prog']." returned ".l:exitval." with ".l:makeoutput." findings"
+    echomsg l:job['prog'] "returned" l:exitval "with" l:makeoutput "findings"
 endfunction
 
 function! s:CreateMakeJobBuffer(prog, lmake)
@@ -144,7 +144,7 @@ function! s:CreateMakeJobBuffer(prog, lmake)
     if !a:lmake
         execute l:winct.'wincmd w'
     endif
-    silent execute 'belowright 10split '.a:prog
+    silent execute 'belowright 10split' a:prog
     setlocal bufhidden=hide buftype=nofile buflisted nolist
     setlocal noswapfile nowrap nomodifiable
     nmap <buffer> <C-c> :MakeJobStop<CR>
@@ -179,7 +179,7 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
     execute 'let l:openbufnr = bufnr("^'.l:prog.'$")'
     if l:openbufnr != -1
         echohl WarningMsg
-        echomsg l:prog.' already running'
+        echomsg l:prog 'already running'
         echohl None
         return
     endif
@@ -238,7 +238,7 @@ function! s:MakeJob(grep, lmake, grepadd, bang, ...) abort
                     \   'outbufhidden': g:makejob_hide_preview_window,
                     \   'cwd': l:cwd }
         echomsg s:jobinfo[split(job_getchannel(b:makejob))[1]]['prog']
-                    \ .' started'
+                    \ 'started'
 
         execute bufwinnr(l:outbufnr).'wincmd w'
         let b:makejob = l:makejob
