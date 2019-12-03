@@ -92,7 +92,17 @@ function! s:JobHandler(channel) abort
         let l:qfcmd = l:job['grepadd'] ? 'caddbuffer' : 'cgetbuffer'
     endif
 
-    silent execute l:qfcmd l:job['outbufnr']
+    if l:job['grep']
+        " :cbuffer family always use errorformat, so copy grepformat to
+        " it temporarily.
+        let l:tempefm = &errorformat
+        let &errorformat = &grepformat
+        silent execute l:qfcmd l:job['outbufnr']
+        let &errorformat = l:tempefm
+    else
+        silent execute l:qfcmd l:job['outbufnr']
+    endif
+
     if !empty(l:outbuf) && l:job['outbufhidden'] == 0
         call win_gotoid(l:outbuf[0])
         silent close
